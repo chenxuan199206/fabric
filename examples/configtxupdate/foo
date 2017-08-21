@@ -1,0 +1,74 @@
+[yellickj@jmobile david]$ diff -Naurw edit_channel_config_orig.json edit_config_block.json
+--- edit_channel_config_orig.json	2017-07-17 11:46:22.000000000 -0400
++++ edit_config_block.json	2017-07-17 11:46:22.000000000 -0400
+@@ -237,7 +237,7 @@
+                                 ],
+                                 "rule": {
+                                     "n_out_of": {
+-                                        "n": 1,
++                    "n": 2,
+                                         "rules": [
+                                             {
+                                                 "signed_by": 0
+
+[yellickj@jmobile david]$ curl -s -X POST --data-binary @edit_channel_config_orig.json http://127.0.0.1:7059/protolator/encode/common.Config > orig_config.pb
+[yellickj@jmobile david]$ curl -s -X POST --data-binary @edit_config_block.json http://127.0.0.1:7059/protolator/encode/common.Config > updated_config.pb
+[yellickj@jmobile david]$ curl -s -X POST -F channel="foo" -F original=@orig_config.pb -F updated=@updated_config.pb http://127.0.0.1:7059/configtxlator/compute/update-from-configs > config_update.pb
+[yellickj@jmobile david]$ curl -s -X POST --data-binary @config_update.pb http://127.0.0.1:7059/protolator/decode/common.ConfigUpdate > config_update.json
+[yellickj@jmobile david]$ cat config_update.json 
+{
+	"channel_id": "foo",
+	"read_set": {
+		"groups": {
+			"Application": {
+				"version": "1"
+			}
+		}
+	},
+	"write_set": {
+		"groups": {
+			"Application": {
+				"policies": {
+					"Admins": {
+						"mod_policy": "Admins",
+						"policy": {
+							"type": 1,
+							"value": {
+								"identities": [
+									{
+										"principal": {
+											"msp_identifier": "PeerOrg1",
+											"role": "ADMIN"
+										}
+									},
+									{
+										"principal": {
+											"msp_identifier": "PeerOrg2",
+											"role": "ADMIN"
+										}
+									}
+								],
+								"rule": {
+									"n_out_of": {
+										"n": 2,
+										"rules": [
+											{
+												"signed_by": 0
+											},
+											{
+												"signed_by": 1
+											}
+										]
+									}
+								}
+							}
+						},
+						"version": "1"
+					}
+				},
+				"version": "1"
+			}
+		}
+	}
+}
+

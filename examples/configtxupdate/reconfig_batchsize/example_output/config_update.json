@@ -1,0 +1,25 @@
+{
+  "channel_id": "testchainid",
+  "read_set": {
+    "groups": {
+      "Orderer": {}
+    }
+  },
+  "write_set": {
+    "groups": {
+      "Orderer": {
+        "values": {
+          "BatchSize": {
+            "mod_policy": "Admins",
+            "value": {
+              "absolute_max_bytes": 10485760,
+              "max_message_count": 11,
+              "preferred_max_bytes": 524288
+            },
+            "version": "1"
+          }
+        }
+      }
+    }
+  }
+}
